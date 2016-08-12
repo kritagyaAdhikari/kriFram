@@ -1,11 +1,10 @@
-
 #include "kriFram.h"
 
 void setup() {
   // initialize framework.
   kriFramSetup();
 
-  Setting("call","Callibrate");
+  kriFramAddSettings("call","Callibrate");
   server.on ( "/home", handleRoot );
   server.on ( "/", handleRoot );
 
@@ -25,6 +24,6 @@ void loop() {
 
 void handleRoot() {
   String body = "Hello World!";
-  server.send ( 200, "text/html", headder + body + footer );
+  server.send ( 200, "text/html", kriFramHeadder + body + kriFramFooter );
   Serial.println ( "root page sent" );
 }
