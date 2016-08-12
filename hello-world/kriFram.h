@@ -21,14 +21,14 @@ const String kriFramFooter = "</body></html>";
 
 String kriFramCustomSetting = "";
 
-void kriFramAddSetting(String link, String displayName) {
+void kriFramAddSettings(String link, String displayName) {
   kriFramCustomSetting += "<a href='" + link + "'><li>" + displayName + "</li></a>";
 }
 
 
 
 
-void handleStatus() {
+void kriFramHandleStatus() {
   uint8_t APmac[6];
   WiFi.softAPmacAddress(APmac);
   uint8_t staMac[6];
@@ -44,14 +44,14 @@ void handleStatus() {
     wifistatus = "Disconnected";
   }
   String temp = "<h1>System Status</h1><table border='1' cellspacing='0'><tr><td colspan='2'><b>AP</b></td></tr><tr><td>Ip Address</td><td>" + WiFi.softAPIP().toString() + "</td></tr><tr><td>MAC Address</td><td>" + String(APmac[5], HEX) + ":" + String(APmac[4], HEX) + ":" + String(APmac[3], HEX) + ":" + String(APmac[2], HEX) + ":" + String(APmac[1], HEX) + ":" + String(APmac[0], HEX) + "</td></tr><tr><td colspan='2'><b>Station</b></td></tr><tr><td>WiFi Status</td><td>" + wifistatus + "</td></tr><tr><td>SSid</td><td>" + WiFi.SSID() + "</td></tr><tr><td>IP Address</td><td>" + WiFi.localIP().toString() + "</td></tr><tr><td>MAC Address</td><td>" + String(staMac[5], HEX) + ":" + String(staMac[4], HEX) + ":" + String(staMac[3], HEX) + ":" + String(staMac[2], HEX) + ":" + String(staMac[1], HEX) + ":" + String(staMac[0], HEX) + "</td></tr><tr><td colspan='2'><b>System</b></td></tr><tr><td>Chip ID</td><td>" + String(ESP.getChipId()) + "</td></tr></table>";
-  server.send ( 200, "text/html", headder + temp + footer );
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
   Serial.println ( "status page sent" );
 
 
 }
 
 
-void handleAjaxConnect() {
+void kriFramHandleAjaxConnect() {
   if (server.hasArg("pass") and server.hasArg("ssid")) {
     char ssid[28];
     char pass[50];
@@ -67,19 +67,19 @@ void handleAjaxConnect() {
   }
 }
 
-void handleConnect() {
+void kriFramHandleConnect() {
   String temp = "<h1>Connect to WiFi</h1>" + server.arg("ssid") + "<div id='passwordForm'>Password: <input type='text' id='pass'><br><button onClick='connect()'>Save And Connect</button></div><script>function connect() { var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (xhttp.readyState == 4 && xhttp.status == 200) { document.getElementById('passwordForm').innerHTML =xhttp.responseText; } }; xhttp.open('POST', 'ajax/connect', true); xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); xhttp.send('ssid=" + server.arg("ssid") + "&pass='+document.getElementById('pass').value);}window.onload = function(){updateLevel();setInterval(updateLevel,2000);}</script>";
-  server.send ( 200, "text/html", headder + temp + footer );
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
   Serial.println ( "connect page sent" );
 };
 
-void handleSettings() {
-  String temp = " <h1>Settings</h1> <ul><a href='status'><li>System Status</li></a> <a href='scan'><li>WiFi Connection</li></a>" + customSetting + "<a href='advSettings'><li>Advance Settings</li></a> </ul>";
-  server.send ( 200, "text/html", headder + temp + footer );
+void kriFramHandleSettings() {
+  String temp = " <h1>Settings</h1> <ul><a href='status'><li>System Status</li></a> <a href='scan'><li>WiFi Connection</li></a>" + kriFramCustomSetting + "<a href='advSettings'><li>Advance Settings</li></a> </ul>";
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
   Serial.println ( "settigns page sent" );
 }
 
-void handleScan() {
+void kriFramHandleScan() {
   String temp = "<h1>WiFi Network Scan</h1>Click the ssid you want to connect to.<br>";
   int n = WiFi.scanNetworks();
   Serial.println("wifi scan completed");
@@ -95,22 +95,22 @@ void handleScan() {
     }
     temp += "</ul>";
   }
-  server.send ( 200, "text/html", headder + temp + footer );
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
 }
 
 
 
-void handleNotFound() {
-  server.send ( 404, "text/html", headder + "<h2>Web Page not Found</h2>" + footer);
+void kriFramHandleNotFound() {
+  server.send ( 404, "text/html", kriFramHeadder + "<h2>Web Page not Found</h2>" + kriFramFooter);
 }
 
-void handleReboot() {
+void kriFramHandleReboot() {
   String temp = " <h1>Reboot</h1> <div id='rebootingMsg'>Click the button below to reboot your device.</div> <button id='reboot' onclick='rebootNow()'>Reboot Now</button> <script>function rebootNow() {var xhttp = new XMLHttpRequest();xhttp.onreadystatechange = function() {if (xhttp.readyState == 4 && xhttp.status == 200) { document.getElementById('reboot').style.display = 'none'; document.getElementById('rebootingMsg').innerHTML = 'Your device is rebooting please wait.';setTimeout(function(){window.location.href='home'},30000); }}; xhttp.open('GET', 'ajax/reboot', true); xhttp.send();}</script>";
-  server.send ( 200, "text/html", headder + temp + footer );
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
   Serial.println ( "reboot page sent" );
 }
 
-void handleAjaxReboot() {
+void kriFramHandleAjaxReboot() {
   server.send ( 200, "text/html", "");
   Serial.println ( "reboot ajax page sent" );
   delay(10000);
@@ -124,7 +124,7 @@ void kriFramSetup () {
   delay(10);
   WiFi.mode(WIFI_AP_STA);
   delay(10);
-  WiFi.softAP(ApSsidthe, ApPassword);
+  WiFi.softAP(ApSsid, ApPassword);
   delay(10);
 
 
@@ -145,7 +145,7 @@ void kriFramSetup () {
 
 
 
-void kritagyaLoop () {
+void kriFramLoop () {
 
   if (wifiStatus != WiFi.status()) {
     wifiStatus = WiFi.status();
