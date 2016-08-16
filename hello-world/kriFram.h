@@ -4,7 +4,9 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-const char *ApSsid = "kriFram-" + ESP.getChipId();
+
+
+const String ApSsid = "kriFram-"+String(ESP.getChipId());
 const char *ApPassword = "1234567890";
 
 ESP8266WebServer server ( 80 );
@@ -120,11 +122,20 @@ void kriFramHandleAjaxReboot() {
 
 
 void kriFramSetup () {
+
+
+
+char ApSsidChar[50];
+ApSsid.toCharArray(ApSsidChar,50);
+//const char *ApSsid = "kriFram-" + char(ESP.getChipId());
+
+
+  
   Serial.begin ( 115200 );
   delay(10);
   WiFi.mode(WIFI_AP_STA);
   delay(10);
-  WiFi.softAP(ApSsid, ApPassword);
+  WiFi.softAP(ApSsidChar, ApPassword);
   delay(10);
 
 
