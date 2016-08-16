@@ -14,9 +14,8 @@ int mdnsStatus = 0;
 int wifiStatus;
 
 
-
-const String css = "body{ margin:auto; padding:5px; font-size: 22px; max-width: 600px;}a{text-decoration: none;color: inherit}h1{font-size: 22px;}#menu{ border-radius: 10px; height:60px; background: linear-gradient(white, lightgray);font-size:10px; padding-left: 20px; padding-right: 20px;}input {height:28px;font-size:22px;margin:5px;border:solid 2px blue;width:180px;border-radius: 8px;}#menu a { text-decoration: none; text-align: center; width:40px; float:left;}#menu a:last-child{ float:right;}#menu .icon { font-size:30px; color:greenyellow;}ul{ list-style-type: none; padding:0px;}li{ margin-left:auto; height:30px; font-size: 20px; border: solid 2px; border-radius: 5px; padding: 5px; margin:5px; }#levelContainerBorder{margin:auto;margin-top:20px;border:10px solid blue;height:300px;width:200px;border-radius: 30px;z-index:1;}#levelContainer{position:absolute;height:300px;width:200px;background-color: lightblue;z-index:-3;}#level{z-index:-2;width:100%position:absolute;z-index:100;height:90%;background-color: white;border-radius: 20px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;}#text{display:block;position: absolute;font-size:30px;bottom: 150px;right: 70px;}";
-const String kriFramHeadder = "<!DOCTYPE html><html lang='en'> <head> <meta name='viewport' content='width=device-width, user-scalable=no'> <meta charset='utf-8'> <title>S2016 Home</title> <style>" + css + "</style> </head> <body> <div id='menu'> <a href='home'><span class='icon'>&#x1F3E0;</span> Home</a> <a href='settings'><span class='icon'>&#x1f527;</span> Settings</a> </div>";
+const String cssFile = "body{ margin:auto; padding:5px; font-size: 22px; max-width: 600px;}a{text-decoration: none;color: inherit}h1{font-size: 22px;}#menu{ border-radius: 10px; height:60px; background: linear-gradient(white, lightgray);font-size:10px; padding-left: 20px; padding-right: 20px;}input {height:28px;font-size:22px;margin:5px;border:solid 2px blue;width:180px;border-radius: 8px;}#menu a { text-decoration: none; text-align: center; width:40px; float:left;}#menu a:last-child{ float:right;}#menu .icon { font-size:30px; color:greenyellow;}ul{ list-style-type: none; padding:0px;}li{ margin-left:auto; height:30px; font-size: 20px; border: solid 2px; border-radius: 5px; padding: 5px; margin:5px; }#levelContainerBorder{margin:auto;margin-top:20px;border:10px solid blue;height:300px;width:200px;border-radius: 30px;z-index:1;}#levelContainer{position:absolute;height:300px;width:200px;background-color: lightblue;z-index:-3;}#level{z-index:-2;width:100%position:absolute;z-index:100;height:90%;background-color: white;border-radius: 20px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;}#text{display:block;position: absolute;font-size:30px;bottom: 150px;right: 70px;}";
+const String kriFramHeadder = "<!DOCTYPE html><html lang='en'> <head> <meta name='viewport' content='width=device-width, user-scalable=no'> <meta charset='utf-8'> <title>S2016 Home</title> <link rel='stylesheet' type='text/css' href='style.css' /> </head> <body> <div id='menu'> <a href='home'><span class='icon'>&#x1F3E0;</span> Home</a> <a href='settings'><span class='icon'>&#x1f527;</span> Settings</a> </div>";
 const String kriFramFooter = "</body></html>";
 
 
@@ -28,7 +27,10 @@ void kriFramAddSettings(String link, String displayName) {
 }
 
 
-
+void kriFramHandleCss(){
+    server.send ( 200, "text/css", cssFile );
+  Serial.println ( "css page sent" );
+  }
 
 void kriFramHandleStatus() {
   uint8_t APmac[6];
@@ -148,6 +150,7 @@ ApSsid.toCharArray(ApSsidChar,50);
   server.on ( "/ajax/connect", kriFramHandleAjaxConnect);
   server.on ( "/connect", kriFramHandleConnect);
   server.on ( "/status", kriFramHandleStatus );
+  server.on ( "/style.css", kriFramHandleCss );
   server.onNotFound ( kriFramHandleNotFound );
 
   Serial.println ( "" );
