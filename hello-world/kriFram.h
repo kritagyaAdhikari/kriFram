@@ -3,13 +3,15 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-
+#include <ESP8266HTTPUpdateServer.h>
 
 
 const String ApSsid = "kriFram-"+String(ESP.getChipId());
 const char *ApPassword = "1234567890";
 
 ESP8266WebServer server ( 80 );
+ESP8266HTTPUpdateServer httpUpdater;
+
 int mdnsStatus = 0;
 int wifiStatus;
 
@@ -83,6 +85,13 @@ void kriFramHandleSettings() {
   Serial.println ( "settigns page sent" );
 }
 
+void kriFramHandleAdvSettings() {
+  String temp = " 
+ <h1>Advanced Settings</h1> <ul><a href='update'><li>Firmware Update</li></a> <a href='reboot'><li>Reboot Device</li></a> <a href='reset'><li>Reset device</li></a> </ul>";
+  server.send ( 200, "text/html", kriFramHeadder + temp + kriFramFooter );
+  Serial.println ( "advanced settings page sent" );
+}
+
 void kriFramHandleScan() {
   String temp = "<h1>WiFi Network Scan</h1>Click the ssid you want to connect to.<br>";
   int n = WiFi.scanNetworks();
@@ -141,7 +150,7 @@ ApSsid.toCharArray(ApSsidChar,50);
   delay(10);
 
 
-
+ httpUpdater.setup(&server);
 
   server.on ( "/settings", kriFramHandleSettings);
   server.on ( "/reboot", kriFramHandleReboot);
@@ -151,6 +160,9 @@ ApSsid.toCharArray(ApSsidChar,50);
   server.on ( "/connect", kriFramHandleConnect);
   server.on ( "/status", kriFramHandleStatus );
   server.on ( "/style.css", kriFramHandleCss );
+  server.on ( "/advSettings", kriFramHandleAdvSettings );
+
+  
   server.onNotFound ( kriFramHandleNotFound );
 
   Serial.println ( "" );
